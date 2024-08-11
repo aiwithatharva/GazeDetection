@@ -26,5 +26,82 @@
     "title": "",
     "section": "Step 3: Use our model (and build your own!)",
     "text": "Step 3: Use our model (and build your own!)\nLet’s see what our model thinks about that tennis we downloaded at the start:\n\nis_tennis,_,probs = learn.predict(PILImage.create('tennis.jpg'))  # PILImage will return Tensor Image using pillow library\nprint(f\"This is a: {is_tennis}.\")\nprint(f\"Probability it's a tennis: {probs[0]:.4f}\")\n\n\n\n\n\n\n\n\nThis is a: tennis.\nProbability it's a tennis: 0.0002\n\n\nGood job, resnet18. :)\nSo, as you see, in the space of a few years, creating computer vision classification models has gone from “so hard it’s a joke” to “trivially easy and free”!\nIt’s not just in computer vision. Thanks to deep learning, computers can now do many things which seemed impossible just a few years ago, including creating amazing artworks, and explaining jokes. It’s moving so fast that even experts in the field have trouble predicting how it’s going to impact society in the coming years.\nOne thing is clear – it’s important that we all do our best to understand this technology, because otherwise we’ll get left behind!\nNow it’s your turn. Click “Copy & Edit” and try creating your own image classifier using your own image searches!\nIf you enjoyed this, please consider clicking the “upvote” button in the top-right – it’s very encouraging to us notebook authors to know when people appreciate our work."
+  },
+  {
+    "objectID": "2020-02-20-test.html",
+    "href": "2020-02-20-test.html",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "",
+    "text": "A tutorial of fastpages for Jupyter notebooks."
+  },
+  {
+    "objectID": "2020-02-20-test.html#front-matter",
+    "href": "2020-02-20-test.html#front-matter",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Front Matter",
+    "text": "Front Matter\nThe first cell in your Jupyter Notebook or markdown blog post contains front matter. Front matter is metadata that can turn on/off options in your Notebook. It is formatted like this:\n# \"My Title\"\n&gt; \"Awesome summary\"\n\n- toc: true\n- branch: master\n- badges: true\n- comments: true\n- author: Hamel Husain & Jeremy Howard\n- categories: [fastpages, jupyter]\n\nSetting toc: true will automatically generate a table of contents\nSetting badges: true will automatically include GitHub and Google Colab links to your notebook.\nSetting comments: true will enable commenting on your blog post, powered by utterances.\n\nThe title and description need to be enclosed in double quotes only if they include special characters such as a colon. More details and options for front matter can be viewed on the front matter section of the README."
+  },
+  {
+    "objectID": "2020-02-20-test.html#markdown-shortcuts",
+    "href": "2020-02-20-test.html#markdown-shortcuts",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Markdown Shortcuts",
+    "text": "Markdown Shortcuts\nA #hide comment at the top of any code cell will hide both the input and output of that cell in your blog post.\nA #hide_input comment at the top of any code cell will only hide the input of that cell.\n\n#hide_input\nprint('The comment #hide_input was used to hide the code that produced this.')\n\nThe comment #hide_input was used to hide the code that produced this.\n\n\nput a #collapse-hide flag at the top of any cell if you want to hide that cell by default, but give the reader the option to show it:\n\n#collapse-hide\nimport pandas as pd\nimport altair as alt\n\nput a #collapse-show flag at the top of any cell if you want to show that cell by default, but give the reader the option to hide it:\n\n#collapse-show\ncars = 'https://vega.github.io/vega-datasets/data/cars.json'\nmovies = 'https://vega.github.io/vega-datasets/data/movies.json'\nsp500 = 'https://vega.github.io/vega-datasets/data/sp500.csv'\nstocks = 'https://vega.github.io/vega-datasets/data/stocks.csv'\nflights = 'https://vega.github.io/vega-datasets/data/flights-5k.json'\n\nplace a #collapse-output flag at the top of any cell if you want to put the output under a collapsable element that is closed by default, but give the reader the option to open it:\n\n#collapse-output\nprint('The comment #collapse-output was used to collapse the output of this cell by default but you can expand it.')\n\nThe comment #collapse-output was used to collapse the output of this cell by default but you can expand it."
+  },
+  {
+    "objectID": "2020-02-20-test.html#interactive-charts-with-altair",
+    "href": "2020-02-20-test.html#interactive-charts-with-altair",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Interactive Charts With Altair",
+    "text": "Interactive Charts With Altair\nCharts made with Altair remain interactive. Example charts taken from this repo, specifically this notebook.\n\n# hide\ndf = pd.read_json(movies) # load movies data\ndf.columns = [x.replace(' ', '_') for x in df.columns.values]\ngenres = df['Major_Genre'].unique() # get unique field values\ngenres = list(filter(lambda d: d is not None, genres)) # filter out None values\ngenres.sort() # sort alphabetically\n\n\n#hide\nmpaa = ['G', 'PG', 'PG-13', 'R', 'NC-17', 'Not Rated']\n\n\nExample 1: DropDown\n\n# single-value selection over [Major_Genre, MPAA_Rating] pairs\n# use specific hard-wired values as the initial selected values\nselection = alt.selection_single(\n    name='Select',\n    fields=['Major_Genre', 'MPAA_Rating'],\n    init={'Major_Genre': 'Drama', 'MPAA_Rating': 'R'},\n    bind={'Major_Genre': alt.binding_select(options=genres), 'MPAA_Rating': alt.binding_radio(options=mpaa)}\n)\n  \n# scatter plot, modify opacity based on selection\nalt.Chart(df).mark_circle().add_selection(\n    selection\n).encode(\n    x='Rotten_Tomatoes_Rating:Q',\n    y='IMDB_Rating:Q',\n    tooltip='Title:N',\n    opacity=alt.condition(selection, alt.value(0.75), alt.value(0.05))\n)\n\n\n\n\n\n\n\n\nExample 2: Tooltips\n\nalt.Chart(df).mark_circle().add_selection(\n    alt.selection_interval(bind='scales', encodings=['x'])\n).encode(\n    alt.X('Rotten_Tomatoes_Rating', type='quantitative'),\n    alt.Y('IMDB_Rating', type='quantitative', axis=alt.Axis(minExtent=30)),\n#     y=alt.Y('IMDB_Rating:Q', ), # use min extent to stabilize axis title placement\n    tooltip=['Title:N', 'Release_Date:N', 'IMDB_Rating:Q', 'Rotten_Tomatoes_Rating:Q']\n).properties(\n    width=500,\n    height=400\n)\n\n\n\n\n\n\n\n\nExample 3: More Tooltips\n\n# select a point for which to provide details-on-demand\nlabel = alt.selection_single(\n    encodings=['x'], # limit selection to x-axis value\n    on='mouseover',  # select on mouseover events\n    nearest=True,    # select data point nearest the cursor\n    empty='none'     # empty selection includes no data points\n)\n\n# define our base line chart of stock prices\nbase = alt.Chart().mark_line().encode(\n    alt.X('date:T'),\n    alt.Y('price:Q', scale=alt.Scale(type='log')),\n    alt.Color('symbol:N')\n)\n\nalt.layer(\n    base, # base line chart\n    \n    # add a rule mark to serve as a guide line\n    alt.Chart().mark_rule(color='#aaa').encode(\n        x='date:T'\n    ).transform_filter(label),\n    \n    # add circle marks for selected time points, hide unselected points\n    base.mark_circle().encode(\n        opacity=alt.condition(label, alt.value(1), alt.value(0))\n    ).add_selection(label),\n\n    # add white stroked text to provide a legible background for labels\n    base.mark_text(align='left', dx=5, dy=-5, stroke='white', strokeWidth=2).encode(\n        text='price:Q'\n    ).transform_filter(label),\n\n    # add text labels for stock prices\n    base.mark_text(align='left', dx=5, dy=-5).encode(\n        text='price:Q'\n    ).transform_filter(label),\n    \n    data=stocks\n).properties(\n    width=500,\n    height=400\n)"
+  },
+  {
+    "objectID": "2020-02-20-test.html#data-tables",
+    "href": "2020-02-20-test.html#data-tables",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Data Tables",
+    "text": "Data Tables\nYou can display tables per the usual way in your blog:\n\n# display table with pandas\ndf[['Title', 'Worldwide_Gross', \n    'Production_Budget', 'Distributor', 'MPAA_Rating', 'IMDB_Rating', 'Rotten_Tomatoes_Rating']].head()\n\n\n\n\n\n\n\n\nTitle\nWorldwide_Gross\nProduction_Budget\nDistributor\nMPAA_Rating\nIMDB_Rating\nRotten_Tomatoes_Rating\n\n\n\n\n0\nThe Land Girls\n146083.0\n8000000.0\nGramercy\nR\n6.1\nNaN\n\n\n1\nFirst Love, Last Rites\n10876.0\n300000.0\nStrand\nR\n6.9\nNaN\n\n\n2\nI Married a Strange Person\n203134.0\n250000.0\nLionsgate\nNone\n6.8\nNaN\n\n\n3\nLet's Talk About Sex\n373615.0\n300000.0\nFine Line\nNone\nNaN\n13.0\n\n\n4\nSlam\n1087521.0\n1000000.0\nTrimark\nR\n3.4\n62.0"
+  },
+  {
+    "objectID": "2020-02-20-test.html#images",
+    "href": "2020-02-20-test.html#images",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Images",
+    "text": "Images\n\nLocal Images\nYou can reference local images and they will be copied and rendered on your blog automatically. You can include these with the following markdown syntax:\n![](my_icons/fastai_logo.png)\n\n\n\nRemote Images\nRemote images can be included with the following markdown syntax:\n![](https://image.flaticon.com/icons/svg/36/36686.svg)\n\n\n\nAnimated Gifs\nAnimated Gifs work, too!\n![](https://upload.wikimedia.org/wikipedia/commons/7/71/ChessPawnSpecialMoves.gif)\n\n\n\nCaptions\nYou can include captions with markdown images like this:\n![](https://www.fast.ai/images/fastai_paper/show_batch.png \"Credit: https://www.fast.ai/2020/02/13/fastai-A-Layered-API-for-Deep-Learning/\")"
+  },
+  {
+    "objectID": "2020-02-20-test.html#github-flavored-emojis",
+    "href": "2020-02-20-test.html#github-flavored-emojis",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "GitHub Flavored Emojis",
+    "text": "GitHub Flavored Emojis\nTyping I give this post two :+1:! will render this:\nI give this post two :+1:!"
+  },
+  {
+    "objectID": "2020-02-20-test.html#tweetcards",
+    "href": "2020-02-20-test.html#tweetcards",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Tweetcards",
+    "text": "Tweetcards\nTyping &gt; twitter: https://twitter.com/jakevdp/status/1204765621767901185?s=20 will render this:\n\ntwitter: https://twitter.com/jakevdp/status/1204765621767901185?s=20"
+  },
+  {
+    "objectID": "2020-02-20-test.html#youtube-videos",
+    "href": "2020-02-20-test.html#youtube-videos",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Youtube Videos",
+    "text": "Youtube Videos\nTyping &gt; youtube: https://youtu.be/XfoYk_Z5AkI will render this:\n\nyoutube: https://youtu.be/XfoYk_Z5AkI"
+  },
+  {
+    "objectID": "2020-02-20-test.html#boxes-callouts",
+    "href": "2020-02-20-test.html#boxes-callouts",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Boxes / Callouts",
+    "text": "Boxes / Callouts\nTyping &gt; Warning: There will be no second warning! will render this:\n\nWarning: There will be no second warning!\n\nTyping &gt; Important: Pay attention! It's important. will render this:\n\nImportant: Pay attention! It’s important.\n\nTyping &gt; Tip: This is my tip. will render this:\n\nTip: This is my tip.\n\nTyping &gt; Note: Take note of this. will render this:\n\nNote: Take note of this.\n\nTyping &gt; Note: A doc link to [an example website: fast.ai](https://www.fast.ai/) should also work fine. will render in the docs:\n\nNote: A doc link to an example website: fast.ai should also work fine."
+  },
+  {
+    "objectID": "2020-02-20-test.html#footnotes",
+    "href": "2020-02-20-test.html#footnotes",
+    "title": "Fastpages Notebook Blog Post",
+    "section": "Footnotes",
+    "text": "Footnotes\nYou can have footnotes in notebooks, however the syntax is different compared to markdown documents. This guide provides more detail about this syntax, which looks like this:\n{% raw %}For example, here is a footnote {% fn 1 %}.\nAnd another {% fn 2 %}\n{{ 'This is the footnote.' | fndetail: 1 }}\n{{ 'This is the other footnote. You can even have a [link](www.github.com)!' | fndetail: 2 }}{% endraw %}\nFor example, here is a footnote {% fn 1 %}.\nAnd another {% fn 2 %}\n{{ ‘This is the footnote.’ | fndetail: 1 }} {{ ‘This is the other footnote. You can even have a link!’ | fndetail: 2 }}"
   }
 ]

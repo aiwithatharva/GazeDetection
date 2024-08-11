@@ -5,6 +5,9 @@ on:
     branches:
       - main  # Change this to your default branch if it's not 'main'
 
+permissions:
+  contents: write  # Grant write permissions to the workflow
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

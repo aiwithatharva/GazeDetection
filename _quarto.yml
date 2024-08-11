@@ -1,3 +1,14 @@
 project:
   type: website
   output-dir: docs
+
+website:
+  title: "Fastai annotated"
+  navbar:
+    right:
+      - text: "Home"
+        href: index.html
+      - text: "Page 1"
+        href: Is_it_a_tennis_Creating_a_model_from_your_own_data.html
+      - text: "Page 2"
+        href: 2020-02-20-test.html

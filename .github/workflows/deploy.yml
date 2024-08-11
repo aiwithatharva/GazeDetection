@@ -3,10 +3,10 @@ name: Quarto Publish
 on:
   push:
     branches:
-      - main  # Change this to your default branch if it's not 'main'
+      - main  # Adjust this if your default branch is not 'main'
 
 permissions:
-  contents: write  # Grant write permissions to the workflow
+  contents: write  # Ensure the workflow has the required permissions
 
 jobs:
   deploy:
@@ -20,10 +20,11 @@ jobs:
       uses: quarto-dev/quarto-actions/setup@v2
 
     - name: Render site
-      run: quarto render
+      run: quarto render  # This generates the necessary files like index.html
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}  # Uses the auto-generated token
-        publish_dir: _site
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: _site  # Directory containing your rendered files
+        publish_branch: gh-pages  # Branch to deploy to

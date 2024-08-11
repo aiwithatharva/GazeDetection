@@ -1,0 +1,14 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Fastai Annotated"
+  navbar:
+    right:
+      - text: "Home"
+        href: index.html
+      - text: "Page 1"
+        href: page1.html
+      - text: "Page 2"
+        href: page2.html
